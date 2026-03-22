@@ -49,22 +49,22 @@ Game Of Life/
 
 ### 4. Frontend — HTML & p5.js Setup
 
-- [ ] Create index.html loading p5.js from CDN
-- [ ] Create sketch.js with setup() and draw()
-- [ ] Render grid fetched from /api/state
+- [x] Create index.html loading p5.js from CDN
+- [x] Create sketch.js with setup() and draw()
+- [x] Render grid fetched from /api/state
 - [ ] Verify: open browser, see empty grid rendered
 
 ### 5. Frontend — Interaction & Controls
 
-- [ ] Click to toggle cells (calls /api/toggle)
-- [ ] Start/Stop button (auto-step mode)
-- [ ] Step button (single generation)
-- [ ] Reset button
-- [ ] Random button
+- [x] Click to toggle cells (calls /api/toggle)
+- [x] Start/Stop button (auto-step mode)
+- [x] Step button (single generation)
+- [x] Reset button
+- [x] Random button
 - [ ] Verify: all buttons work, clicking toggles cells
 
 ### 6. Polish & Integration
 
-- [ ] Adjustable speed for auto-step
-- [ ] Visual styling (alive=white, dead=black)
+- [x] Adjustable speed for auto-step
+- [x] Visual styling (alive=white, dead=black)
 - [ ] Full end-to-end test: create glider, run, observe movement

@@ -6,21 +6,21 @@ let grid = [];
 
 function setup() {
   let canvas = createCanvas(COLS * CELL_SIZE, ROWS * CELL_SIZE);
-  canvas.parent("main");
+  canvas.parent("canvas-container");
   noLoop();
   fetchState();
 }
 
 function draw() {
-  background(0);
+  background(30);
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       if (grid[r] && grid[r][c] === 1) {
-        fill(255);
+        fill(0, 200, 100);
       } else {
-        fill(0);
+        fill(20);
       }
-      stroke(40);
+      stroke(50);
       rect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     }
   }

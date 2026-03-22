@@ -15,7 +15,8 @@
             color: #fff;
         }
         h1 { margin: 10px 0 5px; }
-        #controls { margin-bottom: 5px; }
+        #controls { margin-bottom: 10px; }
+        #canvas-container { padding: 20px; }
         button {
             padding: 6px 14px;
             margin: 0 4px;
@@ -32,7 +33,7 @@
         <button id="randomBtn">Random</button>
         <label style="margin-left:10px;">Speed: <input type="range" id="speed" min="1" max="30" value="10"></label>
     </div>
-    <main></main>
-    <script src="{{ url_for('static', filename='sketch.js') }}"></script>
+    <div id="canvas-container"></div>
+    <script src="{{ url_for('static', filename='sketch.js') }}?v=2"></script>
 </body>
 </html>
