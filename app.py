@@ -1,4 +1,5 @@
 import random
+from flask import Flask, jsonify, request, render_template
 
 ROWS = 50
 COLS = 50
@@ -38,3 +39,51 @@ def step(grid):
             else:
                 new_grid[r][c] = 1 if neighbors == 3 else 0
     return new_grid
+
+
+app = Flask(__name__)
+grid = create_grid()
+
+
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+@app.route("/api/state")
+def api_state():
+    return jsonify(grid)
+
+
+@app.route("/api/step", methods=["POST"])
+def api_step():
+    global grid
+    grid = step(grid)
+    return jsonify(grid)
+
+
+@app.route("/api/toggle", methods=["POST"])
+def api_toggle():
+    data = request.get_json()
+    row = data["row"]
+    col = data["col"]
+    grid[row][col] = 1 - grid[row][col]
+    return jsonify(grid)
+
+
+@app.route("/api/reset", methods=["POST"])
+def api_reset():
+    global grid
+    grid = create_grid()
+    return jsonify(grid)
+
+
+@app.route("/api/random", methods=["POST"])
+def api_random():
+    global grid
+    grid = randomize_grid()
+    return jsonify(grid)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

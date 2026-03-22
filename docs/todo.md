@@ -39,13 +39,13 @@ Game Of Life/
 
 ### 3. Backend — Flask Server & API
 
-- [ ] GET / serves index.html
-- [ ] GET /api/state returns grid JSON
-- [ ] POST /api/step advances generation, returns grid
-- [ ] POST /api/toggle toggles cell at {row, col}
-- [ ] POST /api/reset clears grid
-- [ ] POST /api/random randomizes grid
-- [ ] Verify: curl each endpoint, confirm correct JSON responses
+- [x] GET / serves index.html
+- [x] GET /api/state returns grid JSON
+- [x] POST /api/step advances generation, returns grid
+- [x] POST /api/toggle toggles cell at {row, col}
+- [x] POST /api/reset clears grid
+- [x] POST /api/random randomizes grid
+- [x] Verify: curl each endpoint, confirm correct JSON responses
 
 ### 4. Frontend — HTML & p5.js Setup
 

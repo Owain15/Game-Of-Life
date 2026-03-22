@@ -1,4 +1,5 @@
-from app import create_grid, randomize_grid, count_neighbors, step
+import pytest
+from app import create_grid, randomize_grid, count_neighbors, step, app
 
 
 def test_create_grid_all_zeros():
@@ -113,3 +114,66 @@ def test_glider_advances():
                 assert new[r][c] == 1, f"Expected alive at ({r},{c})"
             else:
                 assert new[r][c] == 0, f"Expected dead at ({r},{c})"
+
+
+# --- Flask API Tests ---
+
+import app as app_module
+
+
+@pytest.fixture
+def client():
+    app.config["TESTING"] = True
+    app_module.grid = create_grid()
+    with app.test_client() as client:
+        yield client
+
+
+def test_get_index(client):
+    resp = client.get("/")
+    assert resp.status_code == 200
+
+
+def test_get_state(client):
+    resp = client.get("/api/state")
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert len(data) == 50
+    assert len(data[0]) == 50
+
+
+def test_post_step(client):
+    # Place a blinker and step
+    app_module.grid[1][0] = 1
+    app_module.grid[1][1] = 1
+    app_module.grid[1][2] = 1
+    resp = client.post("/api/step")
+    data = resp.get_json()
+    # Blinker flips vertical
+    assert data[0][1] == 1
+    assert data[1][1] == 1
+    assert data[2][1] == 1
+
+
+def test_post_toggle(client):
+    resp = client.post("/api/toggle", json={"row": 5, "col": 5})
+    data = resp.get_json()
+    assert data[5][5] == 1
+    # Toggle back
+    resp = client.post("/api/toggle", json={"row": 5, "col": 5})
+    data = resp.get_json()
+    assert data[5][5] == 0
+
+
+def test_post_reset(client):
+    app_module.grid[0][0] = 1
+    resp = client.post("/api/reset")
+    data = resp.get_json()
+    assert all(cell == 0 for row in data for cell in row)
+
+
+def test_post_random(client):
+    resp = client.post("/api/random")
+    data = resp.get_json()
+    assert len(data) == 50
+    assert all(cell in (0, 1) for row in data for cell in row)
