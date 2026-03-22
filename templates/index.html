@@ -3,8 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Game of Life</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: sans-serif;
+            color: #fff;
+        }
+        h1 { margin: 10px 0 5px; }
+        #controls { margin-bottom: 5px; }
+        button {
+            padding: 6px 14px;
+            margin: 0 4px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <h1>Conway's Game of Life</h1>
+    <div id="controls">
+        <button id="startStop">Start</button>
+        <button id="stepBtn">Step</button>
+        <button id="resetBtn">Reset</button>
+        <button id="randomBtn">Random</button>
+        <label style="margin-left:10px;">Speed: <input type="range" id="speed" min="1" max="30" value="10"></label>
+    </div>
+    <main></main>
+    <script src="{{ url_for('static', filename='sketch.js') }}"></script>
 </body>
 </html>
