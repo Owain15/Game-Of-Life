@@ -7,6 +7,9 @@
 - **Git checkpoints**: The user will review and commit after each feature. Do not auto-commit.
 - **Test before stopping**: Ensure all tests pass before presenting the completed feature for review.
 - **Commit summary**: After presenting a feature for review, provide a suggested git commit title and short summary describing the changes made.
+- **Ask for feedback**: After review, ask the user: 1. Change successful, or 2. Issue found.
+  - If **1 (successful)**: Update `todo.md`, then provide a git commit title and short summary. Await confirmation before proceeding to the next feature.
+  - If **2 (issue)**: Ask for more detail on the issue, then fix before re-presenting for review.
 
 ## Solution Structure & Responsibilities
 

@@ -6,11 +6,13 @@
 Game Of Life/
 ├── app.py              # Flask server & game logic
 ├── requirements.txt    # Python dependencies
+├── test_game.py        # Unit tests (pytest)
 ├── static/
 │   └── sketch.js       # p5.js frontend code
 ├── templates/
 │   └── index.html      # Main HTML page
 └── docs/
+    ├── CLAUDE.md       # Claude Code guidelines
     ├── README.md       # Project documentation
     └── todo.md         # This file
 ```
@@ -24,16 +26,16 @@ Game Of Life/
 
 ### 1. Project Setup
 
-- [ ] Create folder structure (static/, templates/, docs/)
-- [ ] Create requirements.txt with flask
-- [ ] Verify: `pip install -r requirements.txt` succeeds
+- [x] Create folder structure (static/, templates/, docs/)
+- [x] Create requirements.txt with flask
+- [x] Verify: `pip install -r requirements.txt` succeeds
 
 ### 2. Backend Core — Game Logic
 
-- [ ] Implement grid model (50x50, cells 0/1)
-- [ ] Implement neighbor counting
-- [ ] Implement Conway rules (step function)
-- [ ] Verify: unit test — glider advances correctly after one step
+- [x] Implement grid model (50x50, cells 0/1)
+- [x] Implement neighbor counting
+- [x] Implement Conway rules (step function)
+- [x] Verify: unit test — glider advances correctly after one step
 
 ### 3. Backend — Flask Server & API
 
