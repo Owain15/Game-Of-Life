@@ -20,6 +20,9 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
+# Testing
+.pytest_cache/
+
 # Project-specific
 .env
 *.log
