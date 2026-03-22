@@ -9,8 +9,8 @@ def create_grid(rows=ROWS, cols=COLS):
     return [[0 for _ in range(cols)] for _ in range(rows)]
 
 
-def randomize_grid(rows=ROWS, cols=COLS):
-    return [[random.randint(0, 1) for _ in range(cols)] for _ in range(rows)]
+def randomize_grid(rows=ROWS, cols=COLS, density=0.5):
+    return [[1 if random.random() < density else 0 for _ in range(cols)] for _ in range(rows)]
 
 
 def count_neighbors(grid, row, col):
@@ -73,15 +73,22 @@ def api_toggle():
 
 @app.route("/api/reset", methods=["POST"])
 def api_reset():
-    global grid
-    grid = create_grid()
+    global grid, ROWS, COLS
+    data = request.get_json(silent=True) or {}
+    ROWS = data.get("rows", ROWS)
+    COLS = data.get("cols", COLS)
+    grid = create_grid(ROWS, COLS)
     return jsonify(grid)
 
 
 @app.route("/api/random", methods=["POST"])
 def api_random():
-    global grid
-    grid = randomize_grid()
+    global grid, ROWS, COLS
+    data = request.get_json(silent=True) or {}
+    ROWS = data.get("rows", ROWS)
+    COLS = data.get("cols", COLS)
+    density = data.get("density", 0.5)
+    grid = randomize_grid(ROWS, COLS, density)
     return jsonify(grid)
 
 

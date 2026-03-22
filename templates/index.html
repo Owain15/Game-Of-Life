@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Game of Life</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
     <style>
         body {
             margin: 0;
@@ -32,8 +31,11 @@
         <button id="resetBtn">Reset</button>
         <button id="randomBtn">Random</button>
         <label style="margin-left:10px;">Speed: <input type="range" id="speed" min="1" max="30" value="10"></label>
+        <label style="margin-left:10px;">Rows: <input type="number" id="rows" min="10" max="200" value="50" style="width:50px;"></label>
+        <label>Cols: <input type="number" id="cols" min="10" max="200" value="50" style="width:50px;"></label>
+        <label style="margin-left:10px;">Density: <input type="range" id="density" min="10" max="90" value="50"> <span id="densityVal">50%</span></label>
     </div>
-    <div id="canvas-container"></div>
+    <div id="canvas-container"><canvas id="gameCanvas"></canvas></div>
     <script src="{{ url_for('static', filename='sketch.js') }}?v=2"></script>
 </body>
 </html>

@@ -177,3 +177,26 @@ def test_post_random(client):
     data = resp.get_json()
     assert len(data) == 50
     assert all(cell in (0, 1) for row in data for cell in row)
+
+
+def test_post_reset_custom_size(client):
+    resp = client.post("/api/reset", json={"rows": 20, "cols": 30})
+    data = resp.get_json()
+    assert len(data) == 20
+    assert len(data[0]) == 30
+    assert all(cell == 0 for row in data for cell in row)
+
+
+def test_post_random_custom_size_and_density(client):
+    resp = client.post("/api/random", json={"rows": 15, "cols": 25, "density": 0.0})
+    data = resp.get_json()
+    assert len(data) == 15
+    assert len(data[0]) == 25
+    assert all(cell == 0 for row in data for cell in row)
+
+
+def test_randomize_grid_density():
+    grid = randomize_grid(100, 100, density=1.0)
+    assert all(cell == 1 for row in grid for cell in row)
+    grid = randomize_grid(100, 100, density=0.0)
+    assert all(cell == 0 for row in grid for cell in row)

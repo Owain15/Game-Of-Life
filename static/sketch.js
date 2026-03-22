@@ -1,44 +1,89 @@
-const ROWS = 50;
-const COLS = 50;
 const CELL_SIZE = 10;
 
 let grid = [];
+let canvas, ctx;
+let offCanvas = document.createElement("canvas");
+let offCtx = offCanvas.getContext("2d");
 
-function setup() {
-  let canvas = createCanvas(COLS * CELL_SIZE, ROWS * CELL_SIZE);
-  canvas.parent("canvas-container");
-  noLoop();
-  fetchState();
-}
+function gridRows() { return grid.length || 50; }
+function gridCols() { return (grid[0] && grid[0].length) || 50; }
 
-function draw() {
-  background(30);
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      if (grid[r] && grid[r][c] === 1) {
-        fill(0, 200, 100);
+function drawGrid() {
+  let rows = gridRows();
+  let cols = gridCols();
+  for (let r = 0; r < rows; r++) {
+    let alive = grid[r];
+    for (let c = 0; c < cols; c++) {
+      if (alive && alive[c] === 1) {
+        offCtx.fillStyle = "#00c864";
       } else {
-        fill(20);
+        offCtx.fillStyle = "#141414";
       }
-      stroke(50);
-      rect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      offCtx.fillRect(c * CELL_SIZE, r * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     }
   }
+  ctx.drawImage(offCanvas, 0, 0);
+}
+
+function updateGrid(data) {
+  grid = data;
+  canvas.width = gridCols() * CELL_SIZE;
+  canvas.height = gridRows() * CELL_SIZE;
+  offCanvas.width = canvas.width;
+  offCanvas.height = canvas.height;
+  drawGrid();
 }
 
 function fetchState() {
   fetch("/api/state")
     .then((res) => res.json())
+    .then(updateGrid);
+}
+
+function getInputs() {
+  return {
+    rows: parseInt(document.getElementById("rows").value) || 50,
+    cols: parseInt(document.getElementById("cols").value) || 50,
+    density: parseInt(document.getElementById("density").value) / 100,
+  };
+}
+
+// Auto-step
+let running = false;
+let stepping = false;
+let timerId = null;
+
+function doStep() {
+  if (stepping) return;
+  stepping = true;
+  fetch("/api/step", { method: "POST" })
+    .then((res) => res.json())
     .then((data) => {
       grid = data;
-      redraw();
+      drawGrid();
+    })
+    .finally(() => {
+      stepping = false;
+      if (running) scheduleStep();
     });
 }
 
-function mousePressed() {
-  let col = Math.floor(mouseX / CELL_SIZE);
-  let row = Math.floor(mouseY / CELL_SIZE);
-  if (row >= 0 && row < ROWS && col >= 0 && col < COLS) {
+function scheduleStep() {
+  let speed = document.getElementById("speed").value;
+  timerId = setTimeout(doStep, 1000 / speed);
+}
+
+// Init
+canvas = document.getElementById("gameCanvas");
+ctx = canvas.getContext("2d");
+fetchState();
+
+// Click to toggle
+canvas.addEventListener("click", function (e) {
+  let rect = canvas.getBoundingClientRect();
+  let col = Math.floor((e.clientX - rect.left) / CELL_SIZE);
+  let row = Math.floor((e.clientY - rect.top) / CELL_SIZE);
+  if (row >= 0 && row < gridRows() && col >= 0 && col < gridCols()) {
     fetch("/api/toggle", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -47,58 +92,52 @@ function mousePressed() {
       .then((res) => res.json())
       .then((data) => {
         grid = data;
-        redraw();
+        drawGrid();
       });
   }
-}
-
-// Auto-step
-let running = false;
-let intervalId = null;
-
-function doStep() {
-  fetch("/api/step", { method: "POST" })
-    .then((res) => res.json())
-    .then((data) => {
-      grid = data;
-      redraw();
-    });
-}
+});
 
 document.getElementById("startStop").addEventListener("click", function () {
   running = !running;
   this.textContent = running ? "Stop" : "Start";
   if (running) {
-    let speed = document.getElementById("speed").value;
-    intervalId = setInterval(doStep, 1000 / speed);
+    scheduleStep();
   } else {
-    clearInterval(intervalId);
+    clearTimeout(timerId);
   }
 });
 
 document.getElementById("stepBtn").addEventListener("click", doStep);
 
 document.getElementById("resetBtn").addEventListener("click", function () {
-  fetch("/api/reset", { method: "POST" })
+  let inp = getInputs();
+  fetch("/api/reset", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rows: inp.rows, cols: inp.cols }),
+  })
     .then((res) => res.json())
-    .then((data) => {
-      grid = data;
-      redraw();
-    });
+    .then(updateGrid);
 });
 
 document.getElementById("randomBtn").addEventListener("click", function () {
-  fetch("/api/random", { method: "POST" })
+  let inp = getInputs();
+  fetch("/api/random", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ rows: inp.rows, cols: inp.cols, density: inp.density }),
+  })
     .then((res) => res.json())
-    .then((data) => {
-      grid = data;
-      redraw();
-    });
+    .then(updateGrid);
 });
 
 document.getElementById("speed").addEventListener("input", function () {
   if (running) {
-    clearInterval(intervalId);
-    intervalId = setInterval(doStep, 1000 / this.value);
+    clearTimeout(timerId);
+    scheduleStep();
   }
+});
+
+document.getElementById("density").addEventListener("input", function () {
+  document.getElementById("densityVal").textContent = this.value + "%";
 });
